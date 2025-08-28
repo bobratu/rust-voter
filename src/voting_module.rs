@@ -6,10 +6,10 @@ pub mod voting_helper {
     use std::error::Error;
     use chrono::Utc;
 
-    const START_VOTE_URL: &str = "https://polls.polldaddy.com/vote-js.php?p=15908244&b=0&a=70042441,&o=&va=16&cookie=0&tags=15908244-src:poll-embed&n=";
+    const START_VOTE_URL: &str = "https://polls.polldaddy.com/vote-js.php?p=15941827&b=0&a=70173778,&o=&va=16&cookie=0&tags=15941827-src:poll-embed&n=";
     const END_VOTE_URL: &str = "&url=https%3A//www.usatodaynetworkservice.com/tangstatic/html/nokl/sf-q1a2z3584c02f3.min.html";
 
-    const START_SESSION_URL: &str = "https://poll.fm/n/40024646678ad5de5ee52dc067eb0b79/15908244?";
+    const START_SESSION_URL: &str = "https://poll.fm/n/227160764c4034780788a8908c73c044/15941827?";
     const END_SESSION_URL: &str = "=";
 
     pub async fn get_session(agent: &Agent) -> Result<String,Box<dyn std::error::Error>> {
@@ -25,6 +25,7 @@ pub mod voting_helper {
     pub async fn vote(session: &String, agent: &Agent) -> Result<(),Box<dyn std::error::Error>> {
         let request: String = format!("{}{}{}",START_VOTE_URL,session,END_VOTE_URL);
         let data = agent.get(request).call()?.body_mut().read_to_string()?;
+        
         println!("{}",data);
 
         if data.len() < 200 {        
