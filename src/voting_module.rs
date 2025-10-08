@@ -6,28 +6,29 @@ pub mod voting_helper {
     use std::error::Error;
     use chrono::Utc;
 
-    const START_VOTE_URL: &str = "https://polls.polldaddy.com/vote-js.php?p=15941827&b=0&a=70173778,&o=&va=16&cookie=0&tags=15941827-src:poll-embed&n=";
-    const END_VOTE_URL: &str = "&url=https%3A//www.usatodaynetworkservice.com/tangstatic/html/nokl/sf-q1a2z3584c02f3.min.html";
+    const START_VOTE_URL: &str = "https://polls.polldaddy.com/vote-js.php?p=16118637&b=0&a=70901586,&o=&va=16&cookie=0&tags=16118637-src:poll-embed&n=";
+    const END_VOTE_URL: &str = "&url=https://www.usatodaynetworkservice.com/tangstatic/html/nokl/sf-q1a2z3584c02f3.min.html";
 
-    const START_SESSION_URL: &str = "https://poll.fm/n/227160764c4034780788a8908c73c044/15941827?";
+    const START_SESSION_URL: &str = "https://poll.fm/n/aa3579900238c75e7bc8abd24709c42f/16118637?";
     const END_SESSION_URL: &str = "=";
 
     pub async fn get_session(agent: &Agent) -> Result<String,Box<dyn std::error::Error>> {
         let request: String = format!("{}{}{}",START_SESSION_URL,Utc::now().timestamp(),END_SESSION_URL);
+        
         let data = agent.get(request).call()?.body_mut().read_to_string()?;
-
+        
         let start_session = data.find("'").unwrap(); 
         let end_session = &data[start_session+1..].find("'").unwrap();
 
+        
         Ok((String::from(&data[start_session+1..start_session+end_session+1])))
     }
 
     pub async fn vote(session: &String, agent: &Agent) -> Result<(),Box<dyn std::error::Error>> {
         let request: String = format!("{}{}{}",START_VOTE_URL,session,END_VOTE_URL);
-        let data = agent.get(request).call()?.body_mut().read_to_string()?;
         
+        let data = agent.get(request).call()?.body_mut().read_to_string()?;
         println!("{}",data);
-
         if data.len() < 200 {        
             return Err(Box::new(SessionExpiredError))
         }

@@ -23,12 +23,12 @@ async fn main() {
         thread::sleep(time::Duration::from_secs(1));
         let mut session = voting_helper::get_session(&agent).await.unwrap();
         match voting_helper::vote(&session, &agent).await {
-            
             Ok(()) => {
                 votes = votes + 1;            
             },
 
             Err(er) => {
+                println!("{}",er);
                 if let Some(_session_expired) = er.downcast_ref::<voting_helper::SessionExpiredError>() {
                     println!("session expired");
                     session = voting_helper::get_session(&agent).await.unwrap();
